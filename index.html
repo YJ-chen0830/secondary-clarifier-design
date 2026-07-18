@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二次沉澱池設計 | Secondary Clarifier Design</title>
+<script src="https://yj-chen0830.github.io/jrh-core/jrh-core.js?v=3" defer></script>
+<style>
+  :root{--navy:#0b1f3a;--navy2:#13284a;--gold:#c9a14a;--gold2:#e0bf6e;--bg:#f5f3ee;--ink:#1c2530;--line:#d8d2c2;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Noto Sans TC","Segoe UI",sans-serif;background:var(--bg);color:var(--ink);}
+  header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#f5f3ee;padding:28px 32px;}
+  header h1{margin:0;font-size:22px;}
+  header span{color:var(--gold2);font-size:13px;display:block;margin-top:4px;}
+  main{max-width:1060px;margin:0 auto;padding:28px 20px 60px;}
+  .grid{display:grid;grid-template-columns:340px 1fr;gap:24px;}
+  @media(max-width:820px){.grid{grid-template-columns:1fr;}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 24px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+  .card h2{font-size:14.5px;margin:0 0 18px;color:var(--navy);font-weight:700;display:flex;align-items:center;gap:8px;border-bottom:2px solid var(--gold);padding-bottom:10px;}
+  label{display:block;font-size:12px;color:#666;margin:10px 0 4px;font-weight:500;}
+  input,select{width:100%;padding:8px 11px;border:1.5px solid var(--line);border-radius:7px;font-size:13.5px;background:#fafaf8;}
+  input:focus,select:focus{outline:none;border-color:var(--gold);}
+  .sec{font-size:12px;font-weight:700;color:var(--navy);margin:16px 0 6px;border-left:4px solid var(--gold);padding-left:9px;letter-spacing:.04em;text-transform:uppercase;}
+  .note{font-size:11.5px;color:#666;margin-top:12px;line-height:1.75;background:#f9f7f2;border-radius:6px;padding:9px 12px;}
+  button.calc-btn{margin-top:16px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--navy);color:#fff;font-size:14.5px;font-weight:700;cursor:pointer;}
+  button.calc-btn:hover{background:var(--navy2);}
+  button.pro-btn{margin-top:12px;width:100%;padding:12px;border:none;border-radius:8px;background:var(--gold);color:var(--navy);font-size:14.5px;font-weight:700;cursor:pointer;}
+  button.pro-btn:hover{filter:brightness(1.08);}
+  table{width:100%;border-collapse:collapse;margin-top:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  th{background:var(--navy);color:#f5f3ee;font-weight:600;font-size:12px;padding:9px 10px;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  td{padding:9px 10px;font-size:13px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:nth-child(even) td{background:#f9f7f3;}
+  td:last-child{text-align:right;font-weight:700;}
+  .ok{color:#1a7d3a;font-weight:700;}
+  .ng{color:#c0392b;font-weight:700;}
+  details.proc{margin-top:16px;border:1px solid var(--line);border-radius:8px;background:#fafaf8;overflow:hidden;}
+  details.proc summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:13px;color:var(--navy);user-select:none;list-style:none;display:flex;align-items:center;gap:6px;}
+  details.proc summary::before{content:"▶";font-size:10px;transition:transform .2s;}
+  details[open].proc summary::before{transform:rotate(90deg);}
+  details.proc pre{margin:0;padding:12px 16px 16px;font-family:"Courier New",monospace;font-size:11.5px;line-height:1.85;white-space:pre-wrap;color:#2c3e50;border-top:1px solid var(--line);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .proj-section{background:#fff;border:1px solid var(--gold);border-radius:10px;padding:18px 22px;margin-bottom:20px;}
+  .proj-section h3{margin:0 0 12px;color:var(--navy);font-size:14px;font-weight:700;}
+  .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:600px){.proj-grid,.row2{grid-template-columns:1fr;}}
+  .mob-tabs{display:none;}
+  .result-note{font-size:12px;color:#555;margin-top:10px;line-height:1.7;background:#f9f7f2;border-left:4px solid var(--gold);padding:10px 12px;border-radius:6px;}
+  @media screen and (max-width:767px){
+    .mob-tabs{display:flex;background:var(--bg);border-bottom:2px solid var(--line);margin:0 -20px 0;padding:0 20px;}
+    .mob-tab{flex:1;padding:11px 4px;text-align:center;font-size:13.5px;font-weight:700;color:#888;cursor:pointer;background:transparent;border:none;border-bottom:3px solid transparent;}
+    .mob-tab.active{color:var(--navy);border-bottom-color:var(--gold);}
+    .grid{display:block;}
+    .grid>.card{display:none;}
+    .grid>.card.mob-active{display:block;}
+  }
+  @media print{
+    header,.no-print{display:none!important;}
+    body{background:#fff;margin:0;font-size:9pt;line-height:1.5;color:#111;}
+    main{padding:0;max-width:100%!important;}
+    .grid{grid-template-columns:1fr!important;gap:10pt!important;}
+    .card{box-shadow:none!important;border:1px solid #ccc!important;border-radius:4pt!important;padding:10pt 12pt!important;break-inside:avoid;}
+    .card h2{font-size:10.5pt!important;padding-bottom:6pt!important;margin-bottom:9pt!important;}
+    label{font-size:8pt!important;margin:6pt 0 2pt!important;}
+    .sec{font-size:8pt!important;margin:10pt 0 4pt!important;}
+    .note,.result-note{font-size:7.5pt!important;padding:6pt 9pt!important;}
+    table{border:1px solid #bbb!important;border-radius:0!important;margin-top:6pt!important;}
+    th{font-size:8pt!important;padding:5pt 7pt!important;background:#0b1f3a!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    td{font-size:8.5pt!important;padding:5pt 7pt!important;}
+    tr:nth-child(even) td{background:#f5f5f5!important;}
+    details.proc{display:block!important;margin-top:10pt!important;border:1pt solid #0b1f3a!important;border-radius:4pt!important;break-inside:avoid;background:#f9f9f6!important;}
+    details.proc>summary{display:none!important;}
+    details.proc::before{content:"📋  計算過程（供第三方檢核）";display:block;font-weight:700;font-size:8pt;color:#0b1f3a;padding:6pt 10pt 4pt;border-bottom:1px solid #ccc;letter-spacing:.04em;}
+    details.proc>pre{font-size:7pt!important;line-height:1.65!important;white-space:pre-wrap!important;padding:6pt 10pt 10pt!important;color:#1a1a1a!important;font-family:"Courier New",monospace!important;}
+    .proj-section{border:1.5pt solid #0b1f3a!important;border-radius:4pt!important;}
+    button.pro-btn,button.calc-btn{display:none!important;}
+    @page{margin:15mm 12mm;size:A4;}
+  }
+</style>
+</head>
+<body data-tool="scd">
+<header>
+  <a href="https://yj-chen0830.github.io/engineering-hub/" style="color:var(--gold2);font-size:12.5px;text-decoration:none;display:inline-block;margin-bottom:8px;">← 返回工程計算中心</a>
+  <h1>🌀 二次沉澱池設計（表面負荷率＋固體負荷率）</h1>
+  <span>Metcalf &amp; Eddy 二沉池雙重檢核法 · SOR / SLR / WLR · 圓形最終沉澱池初步尺寸</span>
+</header>
+<main>
+
+<div class="proj-section no-print" id="projSection">
+  <h3>📁 專案資訊（列印時帶入計算書封面）</h3>
+  <div class="proj-grid">
+    <div><label>工程名稱</label><input id="pj-name" placeholder="○○污水處理廠新建工程"></div>
+    <div><label>工程地點</label><input id="pj-loc" placeholder="○○市○○區"></div>
+    <div><label>承造廠商</label><input id="pj-contractor" placeholder="○○工程顧問股份有限公司"></div>
+    <div><label>文件編號</label><input id="pj-docno" placeholder="SCD-CAL-001"></div>
+    <div><label>計算者</label><input id="pj-calc" placeholder="姓名"></div>
+    <div><label>審核者</label><input id="pj-review" placeholder="姓名"></div>
+    <div><label>計算日期</label><input id="pj-date" type="date"></div>
+  </div>
+</div>
+
+<div class="mob-tabs">
+  <button class="mob-tab active" onclick="switchMobTab('scd-in',this)">📋 輸入參數</button>
+  <button class="mob-tab" id="mobTab-scd-r" onclick="switchMobTab('scd-r',this)">📊 計算結果</button>
+</div>
+
+<div class="grid">
+  <div class="card mob-active" data-tab="scd-in">
+    <h2>二次沉澱池設計輸入</h2>
+
+    <div class="sec">流量與污泥條件</div>
+    <label>設計流量 Q (m³/day)</label>
+    <input id="scd-Q" type="number" value="5000" step="100" min="1">
+
+    <div class="row2">
+      <div>
+        <label>迴流比 R = Qr / Q</label>
+        <input id="scd-R" type="number" value="0.75" step="0.05" min="0">
+      </div>
+      <div>
+        <label>迴流污泥流量 Qr (m³/day，可覆寫)</label>
+        <input id="scd-Qr" type="number" value="" step="100" min="0" placeholder="留白則依 R 自動計算">
+      </div>
+    </div>
+
+    <label>混合液懸浮固體濃度 MLSS (mg/L)</label>
+    <input id="scd-MLSS" type="number" value="3000" step="100" min="100">
+
+    <div class="sec">設計控制值</div>
+    <div class="row2">
+      <div><label>表面負荷率 SOR (m³/m²/day)</label><input id="scd-SOR" type="number" value="28" step="1" min="1"></div>
+      <div><label>固體負荷率 SLR (kg/m²/hr)</label><input id="scd-SLR" type="number" value="5" step="0.1" min="0.1"></div>
+    </div>
+    <div class="row2">
+      <div><label>堰負荷率 WLR 容許值 (m³/m/day)</label><input id="scd-WLR" type="number" value="180" step="5" min="1"></div>
+      <div><label>池深 depth (m)</label><input id="scd-depth" type="number" value="4.5" step="0.1" min="1"></div>
+    </div>
+
+    <button class="calc-btn" onclick="calcSCD()">計算二次沉澱池尺寸</button>
+
+    <div class="note">
+      預設範例：Q=5000 m³/day、R=0.75、MLSS=3000 mg/L、SOR=28 m³/m²/day、SLR=5 kg/m²/hr、WLR=180 m³/m/day、depth=4.5 m。<br>
+      SOR 常見設計流量範圍約 24~32，尖峰流量檢核常見 48~60；SLR 常見 4~6；WLR 常見 125~250。此工具供活性污泥系統最終沉澱池初步設計與第三方檢核用。
+    </div>
+  </div>
+
+  <div class="card" data-tab="scd-r">
+    <h2>設計結果與檢核</h2>
+    <div id="scd-result"><p style="color:#888">尚未計算</p></div>
+    <details class="proc" id="scd-proc" style="display:none">
+      <summary>📋 計算過程（供第三方檢核）</summary>
+      <pre id="scd-proc-text"></pre>
+    </details>
+    <button class="pro-btn no-print" onclick="openPro()">📄 產出計算書 PDF</button>
+  </div>
+</div>
+
+</main>
+<script>
+function switchMobTab(name,btn){
+  btn.parentElement.querySelectorAll('.mob-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  btn.parentElement.nextElementSibling.querySelectorAll('.card').forEach(function(c){
+    c.classList.toggle('mob-active',c.dataset.tab===name);
+  });
+}
+function openPro(){ JRH.checkEmail(function(){ jrhPrint('二次沉澱池設計計算書'); }); }
+function v(id){
+  var raw=document.getElementById(id).value;
+  if(raw===null||raw===""){return NaN;}
+  return parseFloat(raw);
+}
+function f1(x){return x.toFixed(1);}
+function f2(x){return x.toFixed(2);}
+function f3(x){return x.toFixed(3);}
+
+function calcSCD(){
+  var Q=v('scd-Q');
+  var R=v('scd-R');
+  var QrIn=v('scd-Qr');
+  var MLSS=v('scd-MLSS');
+  var SOR=v('scd-SOR');
+  var SLR=v('scd-SLR');
+  var WLR=v('scd-WLR');
+  var depth=v('scd-depth');
+
+  if(!(Q>0&&MLSS>0&&SOR>0&&SLR>0&&WLR>0&&depth>0)){
+    document.getElementById('scd-result').innerHTML='<p class="ng">請輸入有效正值。</p>';
+    document.getElementById('scd-proc').style.display='none';
+    return;
+  }
+
+  var Qr = isNaN(QrIn) ? Q*R : QrIn;
+  var Rused = Q===0 ? 0 : Qr/Q;
+  var AsSOR = Q / SOR;
+  var massDay = (Q + Qr) * MLSS / 1000;
+  var massHr = massDay / 24;
+  var AsSLR = massHr / SLR;
+  var governing = AsSLR > AsSOR ? 'SLR 控制' : (AsSLR < AsSOR ? 'SOR 控制' : 'SOR 與 SLR 同時控制');
+  var AsDesign = Math.max(AsSOR, AsSLR);
+  var D = Math.sqrt(4 * AsDesign / Math.PI);
+  var weirLength = Math.PI * D;
+  var weirLoading = Q / weirLength;
+  var weirOK = weirLoading <= WLR;
+  var hrtDay = (AsDesign * depth) / Q;
+  var hrtHr = hrtDay * 24;
+
+  var res = document.getElementById('scd-result');
+  res.innerHTML =
+    '<table><tr><th>項目</th><th>數值</th></tr>'+
+    '<tr><td>採用迴流污泥流量 Qr</td><td>'+f1(Qr)+' m³/day</td></tr>'+
+    '<tr><td>採用迴流比 R</td><td>'+f2(Rused)+'</td></tr>'+
+    '<tr><td>SOR 所需表面積 As_SOR</td><td>'+f2(AsSOR)+' m²</td></tr>'+
+    '<tr><td>SLR 所需表面積 As_SLR</td><td>'+f2(AsSLR)+' m²</td></tr>'+
+    '<tr><td>控制條件</td><td>'+governing+'</td></tr>'+
+    '<tr><td>設計表面積 As_design</td><td>'+f2(AsDesign)+' m²</td></tr>'+
+    '<tr><td>圓池直徑 D</td><td>'+f2(D)+' m</td></tr>'+
+    '<tr><td>周邊堰長 πD</td><td>'+f2(weirLength)+' m</td></tr>'+
+    '<tr><td>堰負荷 Q/(πD)</td><td>'+f2(weirLoading)+' m³/m/day '+(weirOK?'<span class="ok">OK</span>':'<span class="ng">NG</span>')+'</td></tr>'+
+    '<tr><td>停留時間 HRT</td><td>'+f2(hrtHr)+' hr</td></tr>'+
+    '</table>'+
+    '<div class="result-note">本工具以 SOR 與 SLR 雙重檢核取控制面積，再用周邊堰長進行 WLR 檢核。若堰負荷超限，可增加池徑、採雙邊或鋸齒堰、或改多池配置後再複核。</div>';
+
+  var p='';
+  p+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+  p+='  二次沉澱池設計計算過程（Metcalf & Eddy 雙重檢核法）\n';
+  p+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+  p+='【輸入條件】\n';
+  p+='  設計流量 Q = '+Q+' m³/day\n';
+  p+='  迴流污泥流量 Qr = '+f1(Qr)+' m³/day';
+  p+=isNaN(QrIn)?'（由 R='+R+' 自動換算）\n':'（使用者直接輸入）\n';
+  p+='  採用迴流比 R = Qr/Q = '+f1(Qr)+'/'+Q+' = '+f3(Rused)+'\n';
+  p+='  MLSS = '+MLSS+' mg/L\n';
+  p+='  SOR = '+SOR+' m³/m²/day\n';
+  p+='  SLR = '+SLR+' kg/m²/hr\n';
+  p+='  WLR 容許值 = '+WLR+' m³/m/day\n';
+  p+='  池深 depth = '+depth+' m\n\n';
+  p+='【一】依表面負荷率 SOR 計算所需表面積\n';
+  p+='  As_SOR = Q / SOR\n';
+  p+='         = '+Q+' / '+SOR+'\n';
+  p+='         = '+f2(AsSOR)+' m²\n\n';
+  p+='【二】依固體負荷率 SLR 計算所需表面積\n';
+  p+='  總懸浮固體質量流量(kg/day) = (Q + Qr) × MLSS / 1000\n';
+  p+='                           = ('+Q+' + '+f1(Qr)+') × '+MLSS+' / 1000\n';
+  p+='                           = '+f2(massDay)+' kg/day\n';
+  p+='  質量流量(kg/hr) = '+f2(massDay)+' / 24 = '+f2(massHr)+' kg/hr\n';
+  p+='  As_SLR = 質量流量 / SLR\n';
+  p+='         = '+f2(massHr)+' / '+SLR+'\n';
+  p+='         = '+f2(AsSLR)+' m²\n\n';
+  p+='【三】控制面積判定\n';
+  p+='  As_SOR = '+f2(AsSOR)+' m²\n';
+  p+='  As_SLR = '+f2(AsSLR)+' m²\n';
+  p+='  As_design = max(As_SOR, As_SLR) = '+f2(AsDesign)+' m²\n';
+  p+='  Governing condition = '+governing+'\n\n';
+  p+='【四】圓形池直徑\n';
+  p+='  D = sqrt(4 × As_design / π)\n';
+  p+='    = sqrt(4 × '+f2(AsDesign)+' / π)\n';
+  p+='    = '+f2(D)+' m\n\n';
+  p+='【五】堰負荷檢核\n';
+  p+='  周邊堰長 Lw = π × D = π × '+f2(D)+' = '+f2(weirLength)+' m\n';
+  p+='  WLR_actual = Q / Lw = '+Q+' / '+f2(weirLength)+' = '+f2(weirLoading)+' m³/m/day\n';
+  p+='  比較：'+f2(weirLoading)+' ';
+  p+=weirOK?'≤ ':'> ';
+  p+=WLR+' → '+(weirOK?'OK':'NG')+'\n\n';
+  p+='【六】水力停留時間 HRT\n';
+  p+='  HRT(day) = (As_design × depth) / Q\n';
+  p+='           = ('+f2(AsDesign)+' × '+depth+') / '+Q+'\n';
+  p+='           = '+f3(hrtDay)+' day\n';
+  p+='  HRT(hr)  = '+f3(hrtDay)+' × 24 = '+f2(hrtHr)+' hr\n\n';
+  p+='【七】兩種控制情境比較\n';
+  p+='  若僅依 SOR 設計，需面積 '+f2(AsSOR)+' m²，對應直徑約 '+f2(Math.sqrt(4 * AsSOR / Math.PI))+' m\n';
+  p+='  若僅依 SLR 設計，需面積 '+f2(AsSLR)+' m²，對應直徑約 '+f2(Math.sqrt(4 * AsSLR / Math.PI))+' m\n';
+  p+='  本案採較大者 '+f2(AsDesign)+' m²，故由「'+governing+'」決定池體尺寸。\n\n';
+  p+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+  p+='  說明：本工具適用活性污泥法曝氣槽後之二次沉澱池初步設計，屬生物污泥沉降檢核，\n';
+  p+='        與化學混凝沉澱池設計不同；正式設計仍應依實際進流水質、SVI、尖峰流量與池數配置複核。\n';
+  p+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+  document.getElementById('scd-proc-text').textContent=p;
+  document.getElementById('scd-proc').style.display='';
+  if(window.innerWidth<768){
+    var b=document.getElementById('mobTab-scd-r');
+    if(b){switchMobTab('scd-r',b);}
+  }
+}
+
+calcSCD();
+</script>
+<script>
+window.jrhDocMeta={
+  "doc":"二次沉澱池設計計算書",
+  "codes":[
+    "Metcalf & Eddy, Wastewater Engineering: Treatment and Resource Recovery",
+    "二次沉澱池初步設計常用準則：SOR / SLR / WLR"
+  ],
+  "notes":[
+    "本工具以圓形最終沉澱池為對象，採表面負荷率與固體負荷率雙重檢核，取較大控制面積作為設計值。",
+    "迴流污泥流量可由迴流比 R=Qr/Q 自動換算，亦可直接輸入 Qr 覆寫；當直接輸入 Qr 時，畫面同步回算採用的 R。",
+    "堰負荷檢核假設採周邊單一道環形出水堰；若實際採多重堰、鋸齒堰或周邊與中央複合配置，應依實際堰長重新檢核。",
+    "本工具未處理尖峰流量、池數分配、污泥界面高度、短路流、SVI 與出流水 SS 保證值等操作面議題，正式設計需另行複核。",
+    "本計算書供方案與初步設計使用，最終尺寸與構造仍應由環工專業技師依專案條件確認。"
+  ]
+};
+</script>
+</body>
+</html>
